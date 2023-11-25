@@ -31,14 +31,15 @@ class Auth:
     def __init__(self):
         self._db = DBStorage()
 
-    def register_user(self, username: str, firstname: str,
-                      lastname: str, password: str, email: str):
+    def register_user(self, email: str, password: str):
         """Registers a user to the database"""
+        if password is None:
+            raise ValueError("Password cannot be None")
         try:
-            self._db.get_user(username=username)
-            raise ValueError(f"User {username} already exists")
+            self._db.get_user(email=email)
+            raise ValueError(f"User {email} already exists")
         except NoResultFound:
-            return self._db.add_user(username, firstname, lastname, _hash_password(password), email)
+            return self._db.add_user(email, _hash_password(password))
         
     def valid_login(self, email: str, password: str):
         """Validates the password"""

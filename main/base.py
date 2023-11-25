@@ -2,12 +2,12 @@
 """Base File"""
 import json
 from datetime import datetime
-from sqlalchemy.ext.declarative import declarative_base
+# from sqlalchemy.ext.declarative import declarative_base
 from uuid import uuid4
 import main
 from sqlalchemy import Column, String
 
-Base = declarative_base()
+# Base = declarative_base()
 
 
 class Main():

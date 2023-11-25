@@ -25,16 +25,17 @@ def not_found(error):
 @app.route('/users', methods=['POST'], strict_slashes=False)
 def reg_users():
     """Registers a user to the database"""
-    username = request.form.get('username')
-    firstname = request.form.get('firstname')
-    lastname = request.form.get('lastname')
+    
     email = request.form.get('email')
     password = request.form.get('password')
+    
+    if email is None or password is None:
+        return jsonify({"message": "Email and password are required"}), 400
     try:
-        user = AUTH.register_user(username, firstname, lastname, password, email)
-        return jsonify({"username": user.username, "message": "User Created Successfully"}), 200
+        user = AUTH.register_user(email, password)
+        return jsonify({"email": user.email, "message": "User Created Successfully"}), 200
     except ValueError:
-        return jsonify({"message": "username already exists"}), 400
+        return jsonify({"message": "email already exists"}), 400
     
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
 def login():

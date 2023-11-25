@@ -8,7 +8,7 @@ from main.users import User
 
 my_db = DBStorage()
 
-user_1 = my_db.add_user("Dwayne", "Dinobi", "Udeh", "Dinobi2002", "udehdinobi@gmail.com")
+user_1 = my_db.add_user("superme2@gmail.com", "Dinobi334")
 print(user_1.id)
 
 # user_2 = my_db.add_user("test1@test.com", "SuperHashedPwd1")
