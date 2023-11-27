@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """Flask Application Setup"""
-from main import store
-from flask import Flask, render_template, jsonify, abort
+# from main import store
+from flask import Flask, render_template, jsonify, abort, redirect
 from flask_cors import CORS
 from os import environ
 from flask import request
@@ -12,10 +12,10 @@ app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
 
 
-@app.teardown_appcontext
-def close_db(error):
-    """Closes Store"""
-    store.close()
+# @app.teardown_appcontext
+# def close_db(error):
+#     """Closes Store"""
+#     store.close()
 
 @app.errorhandler(404)
 def not_found(error):
@@ -50,6 +50,50 @@ def login():
     res.set_cookie("session_id", session_id)
     return res
 
+@app.route('/sessions', methods=['DELETE'], strict_slashes=False)
+def logout():
+    """Logouts out a user by deleting current session"""
+    session_id = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session_id)
+    if not user:
+        abort(403)
+    AUTH.destroy_session(user.id)
+    return redirect('/')
+
+@app.route('/profile', methods=['GET'], strict_slashes=False)
+def get_profile():
+    """Gets the profile of a user"""
+    session = request.cookies.get("session_id")
+    user = AUTH.get_user_from_session_id(session)
+    if user:
+        return jsonify({"email": user.email}), 200
+    else:
+        abort(403)
+
+
+@app.route('/reset_password', methods=['POST'], strict_slashes=False)
+def reset_token():
+    """
+    Gets a reset password token for a user
+    """
+    email = request.form.get("email")
+    user = AUTH.get_reset_password_token(email)
+    if not user:
+        abort(403)
+    return jsonify({"email": f"{email}", "reset_token": f"{user}"}), 200
+
+
+@app.route('/reset_password', methods=['PUT'], strict_slashes=False)
+def update_password():
+    """Updates password of a user """
+    email = request.form.get("email")
+    reset_token = request.form.get("reset_token")
+    new_password = request.form.get("new_password")
+    try:
+        user = AUTH.update_password(reset_token, new_password)
+    except ValueError:
+        abort(403)
+    return jsonify({"email": f"{email}", "message": "Password updated"}), 200
 
 if __name__ == "__main__":
     """Main function"""
@@ -59,4 +103,4 @@ if __name__ == "__main__":
         host = '0.0.0.0'
     if not port:
         port = '5000'
-    app.run(host=host, port=port, threaded=True)
+    app.run(host=host, port=port, threaded=True, debug=True)
