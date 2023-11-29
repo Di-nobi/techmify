@@ -5,13 +5,16 @@ from flask import Flask, render_template, jsonify, abort, redirect
 from flask_cors import CORS
 from os import environ
 from flask import request
+from api.version1.views import app_views
 from main.auth import Auth
+from flask_socketio import SocketIO, emit, join_room
+
 
 AUTH = Auth()
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
-
-
+app.register_blueprint(app_views)
+socketio = SocketIO(app)
 # @app.teardown_appcontext
 # def close_db(error):
 #     """Closes Store"""
@@ -104,3 +107,4 @@ if __name__ == "__main__":
     if not port:
         port = '5000'
     app.run(host=host, port=port, threaded=True, debug=True)
+    socketio.run(app)

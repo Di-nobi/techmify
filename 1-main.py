@@ -4,11 +4,11 @@ Main file
 """
 from main.auth import Auth
 
-email = 'dinobi100.com'
+email = 'dinobi10022.com'
 password = '22'
 auth = Auth()
 
-# auth.register_user(email, password)
+auth.register_user(email, password)
 
 print(auth.valid_login(email, password))
 
