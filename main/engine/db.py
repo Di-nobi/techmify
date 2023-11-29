@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 from main.users import MongoDBUser
+from main.chatRequest import ChatRequest
 from colorama import Fore
 from mongoengine import connect
 from bson import ObjectId
@@ -65,4 +66,8 @@ class DBStorage:
             usr = cls.objects(id=usr_id).first()
         except DoesNotExist:
             raise ValueError(f"{cls.__name__} does not exist")
+        if type(usr) is ChatRequest:
+            from_id = usr.from_id
+            to_id = usr.to_id
+            return { "from_id": from_id, "to_id": to_id }
         return usr

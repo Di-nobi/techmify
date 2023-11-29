@@ -1,6 +1,6 @@
 import mongoengine
 
-class Message(mongoengine.Document):
+class Message(mongoengine.EmbeddedDocument):
     contents = mongoengine.StringField(required=True)
     the_room = mongoengine.StringField(required=True)
 
