@@ -2,14 +2,14 @@ from flask_socketio import SocketIO, emit, join_room
 from cryptography.fernet import Fernet
 import uuid
 from flask import Flask, request, jsonify, abort
-from api.version1.views import app_views
+from api.version1.views import socketio, app_views
 from main.engine.db import DBStorage
 from main.chatRequest import ChatRequest
 from main.users import MongoDBUser
 key = Fernet.generate_key()
 cipher = Fernet(key)
 
-@app_views.on('chat_request')
+@socketio.on('chat_request')
 def handler_req(arg):
     """
     Upcoming updates:

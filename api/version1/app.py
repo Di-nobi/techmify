@@ -5,20 +5,28 @@ from flask import Flask, render_template, jsonify, abort, redirect
 from flask_cors import CORS
 from os import environ
 from flask import request
-# from api.version1.views import app_views
+from api.version1.views import app_views, socketio
 from main.auth import Auth
 from flask_socketio import SocketIO, emit, join_room
-
+from flask_mail import Mail, Message
 
 AUTH = Auth()
 app = Flask(__name__)
 cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
-# app.register_blueprint(app_views)
-# socketio = SocketIO(app)
+mail = Mail(app)
+app.register_blueprint(app_views)
+socketio = SocketIO(app)
 # @app.teardown_appcontext
 # def close_db(error):
 #     """Closes Store"""
 #     store.close()
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 587
+app.config['MAIL_USE_TLS'] = True
+app.config['MAIL_USE_SSL'] = False
+app.config['MAIL_USERNAME'] = 'udehdinobi@gmail.com'
+app.config['MAIL_PASSWORD'] = 'sfshwtfipblsokxm'
+app.config['MAIL_DEFAULT_SENDER'] = 'udehdinobi@gmail.com'
 
 @app.errorhandler(404)
 def not_found(error):
@@ -38,9 +46,23 @@ def reg_users():
         return jsonify({"message": "Email and password are required"}), 400
     try:
         user = AUTH.register_user(email, password, username, firstname, lastname)
+        send_welcome_email(email, username)
         return jsonify({"email": user.email, "message": "User Created Successfully"}), 200
     except ValueError:
         return jsonify({"message": "email already exists"}), 400
+    
+def send_welcome_email(email: str, username: str):
+    """Send a welcome email to the user"""
+    subject = "Welcome to techmify"
+    body = f'Hello {username}, \n\nThank you for registering with Us!'
+
+    message = Message(subject=subject, recipients=[email], body=body)
+
+    try:
+        mail.send(message)
+        print("Email sent successfully")
+    except Exception as err:
+        print(f'Error sending email: {err}')
     
 @app.route('/sessions', methods=['POST'], strict_slashes=False)
 def login():
@@ -108,5 +130,5 @@ if __name__ == "__main__":
         host = '0.0.0.0'
     if not port:
         port = '5000'
-    app.run(host=host, port=port, threaded=True, debug=True)
-    # socketio.run(app)
+    socketio.run(app, host=host, port=port, debug=True)
+    
