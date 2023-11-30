@@ -10,8 +10,9 @@ connect(alias='core', host='mongodb://localhost:27017/techmify')
 
 classes = {"MongoDBUser": MongoDBUser}
 class DBStorage:
-    def add_user(self, email, hashed_password):
-        user = MongoDBUser(email=email, hashed_password=hashed_password)
+    def add_user(self, email, hashed_password, username, firstname, lastname):
+        user = MongoDBUser(email=email, hashed_password=hashed_password, username=username, firstname=firstname,
+                           lastname=lastname)
         user.save()
         return user
     

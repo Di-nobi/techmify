@@ -3,12 +3,14 @@
 Main file
 """
 from main.auth import Auth
-
-email = 'dinobi10022.com'
+username = 'Great'
+firstname = 'Mandy'
+lastname = 'Ander'
+email = 'dinobi100.com'
 password = '22'
 auth = Auth()
 
-auth.register_user(email, password)
+auth.register_user(email, password, username, firstname, lastname)
 
 print(auth.valid_login(email, password))
 

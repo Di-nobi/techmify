@@ -11,6 +11,8 @@ class MongoDBUser(mongoengine.Document):
     reset_token= mongoengine.StringField(required=False)
     session_id = mongoengine.StringField(required=False)
 
+    # Message = mongoengine.ListField()
+
     meta = {
         'db_alias': 'core',
         'collection': 'users'

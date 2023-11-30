@@ -8,6 +8,7 @@ from main.chatRequest import ChatRequest
 from main.users import MongoDBUser
 key = Fernet.generate_key()
 cipher = Fernet(key)
+
 @app_views.on('chat_request')
 def handler_req(arg):
     """
