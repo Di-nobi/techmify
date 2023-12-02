@@ -12,12 +12,8 @@ def _hash_password(password: str) -> bytes:
     Args:
         Passwords"""
     data = password.encode('utf-8')
-    return bcrypt.hashpw(data, bcrypt.gensalt())
-
-# def _generate_jwt() -> str:
-#     """Generates a JWT token for session, returning a string form"""
-#     token = jwt.sign({email, userId: usr_mail._id.toString()}, '4be41d164a4fdeac0fb4be594853f792e16fdc190101f5c89905ae0ce4aee5d9', { expiresIn: '1h' });
-#     return token
+    hashed_passwd = bcrypt.hashpw(data, bcrypt.gensalt())
+    return hashed_passwd
 
 def _generate_uuid() -> str:
     """Generates a UUID for session authentication"""
@@ -46,7 +42,11 @@ class Auth:
         user = self._db.get_user(email=email)
         if not user:
             return False
-        return bcrypt.checkpw(password.encode('utf-8'), user.hashed_password.encode())
+        
+        hashed_password = user.hashed_password
+        if not hashed_password:
+            return False
+        return bcrypt.checkpw(password.encode('utf-8'), hashed_password.encode())
     
     def create_session(self, email: str) -> str:
         """Creates a session"""
@@ -64,6 +64,7 @@ class Auth:
         except ValueError:
             return None
         return None
+
     def get_user_from_session_id(self, session_id: str):
         """Gets a user from a session id"""
         session_user = self._db.get_user(session_id=session_id)
@@ -94,6 +95,6 @@ class Auth:
             user = self._db.get_user(reset_token=reset_token)
         except NoResultFound:
             raise ValueError
-        password = _hash_password(password)
+        password = _hash_password(password).decode('utf-8')
         self._db.update_user(user.id, hashed_password=password,
                              reset_token=None)

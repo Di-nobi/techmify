@@ -1,5 +1,6 @@
 import mongoengine
 import datetime
+from main.chats import Message
 
 class MongoDBUser(mongoengine.Document):
     # id = mongoengine.IntField(required=False)
@@ -11,7 +12,7 @@ class MongoDBUser(mongoengine.Document):
     reset_token= mongoengine.StringField(required=False)
     session_id = mongoengine.StringField(required=False)
 
-    # Message = mongoengine.ListField()
+    message = mongoengine.EmbeddedDocumentListField(Message)
 
     meta = {
         'db_alias': 'core',

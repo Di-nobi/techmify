@@ -3,10 +3,10 @@
 Main file
 """
 from main.auth import Auth
-username = 'Great'
-firstname = 'Mandy'
-lastname = 'Ander'
-email = 'dinobi100.com'
+username = 'dinny'
+firstname = 'Dracula'
+lastname = 'King'
+email = 'dracula100@yahoo.com'
 password = '22'
 auth = Auth()
 

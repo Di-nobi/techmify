@@ -1,15 +1,42 @@
 #!/usr/bin/env python3
 from main.users import MongoDBUser
 from main.chatRequest import ChatRequest
+from main.chats import Message
 from colorama import Fore
 from mongoengine import connect
+import mongoengine
 from bson import ObjectId
 from mongoengine import DoesNotExist
-
+from os import getenv
+import ssl
 connect(alias='core', host='mongodb://localhost:27017/techmify')
+# data = dict(
+#     username = getenv('Dinobi'),
+#     password = getenv('Dinobi$2002'),
+#     host = 'localhost',
+#     port = int(getenv('PORT', 27017)),
+#     authentication_source = 'admin',
+#     authentication_mechanism = 'SCRAM-SHA-1',
+#     ssl = True,
+#     ssl_cert_reqs = ssl.CERT_NONE
+# )
 
-classes = {"MongoDBUser": MongoDBUser}
+# mongoengine.register_connection(alias='core', name='techmify', **data)
+classes = {"MongoDBUser": MongoDBUser, "ChatRequest": ChatRequest, "Message": Message}
 class DBStorage:
+    def __init__(self):
+        self.__client = None
+
+    # def connect_mongo(self):
+    #     """Connect to the Mongodb"""
+    #     if not self.__client:
+    #         self.__client = mongoengine.connect(alias='core', name='techmify', **data)
+
+    # def close(self):
+    #     if self.__client:
+    #         self.__client.close()
+    #         self.__client = None
+
     def add_user(self, email, hashed_password, username, firstname, lastname):
         user = MongoDBUser(email=email, hashed_password=hashed_password, username=username, firstname=firstname,
                            lastname=lastname)
@@ -72,3 +99,4 @@ class DBStorage:
             to_id = usr.to_id
             return { "from_id": from_id, "to_id": to_id }
         return usr
+    

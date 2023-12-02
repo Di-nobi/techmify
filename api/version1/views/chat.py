@@ -50,7 +50,7 @@ def accepts_reg(data):
     room = str(uuid4())
 
     #Displays to both the sender and the receiver that the chat has been accepted
-    emit('chat_accepted', {'room': room}, room = from_id)
+    emit('chat_accepted', {'room': room}, room=from_id)
     emit('chat_accepted', {'room': room}, room=to_id)
 
     #Adds the sender and the receiver to thesame room
