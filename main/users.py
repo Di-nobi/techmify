@@ -1,9 +1,10 @@
 import mongoengine
 import datetime
 from main.chats import Message
+from main.chatRequest import ChatRequest
 
 class MongoDBUser(mongoengine.Document):
-    # id = mongoengine.IntField(required=False)
+    # _id = mongoengine.StringField(required=False)
     username = mongoengine.StringField(required=True)
     firstname = mongoengine.StringField(required=False)
     lastname = mongoengine.StringField(required=False)
@@ -13,7 +14,7 @@ class MongoDBUser(mongoengine.Document):
     session_id = mongoengine.StringField(required=False)
 
     message = mongoengine.EmbeddedDocumentListField(Message)
-
+    chat_request = mongoengine.EmbeddedDocumentListField(ChatRequest)
     meta = {
         'db_alias': 'core',
         'collection': 'users'

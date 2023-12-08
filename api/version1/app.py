@@ -12,10 +12,10 @@ from flask_mail import Mail, Message
 
 AUTH = Auth()
 app = Flask(__name__)
-cors = CORS(app, resources={r"/*": {"origins": "0.0.0.0"}})
+cors = CORS(app, resources={r"/*": {"origins": "*"}})
 mail = Mail(app)
 app.register_blueprint(app_views)
-socketio = SocketIO(app)
+socketio = SocketIO(app, cors_allowed_origins="*")
 # @app.teardown_appcontext
 # def close_db(error):
 #     """Closes Store"""

@@ -24,18 +24,18 @@ connect(alias='core', host='mongodb://localhost:27017/techmify')
 # mongoengine.register_connection(alias='core', name='techmify', **data)
 classes = {"MongoDBUser": MongoDBUser, "ChatRequest": ChatRequest, "Message": Message}
 class DBStorage:
-    def __init__(self):
-        self.__client = None
+    # def __init__(self):
+    #     self.__client = None
 
-    def connect_mongo(self):
-        """Connect to the Mongodb"""
-        if not self.__client:
-            self.__client = mongoengine.connect(alias='core',  host='mongodb://localhost:27017/techmify')
+    # def connect_mongo(self):
+    #     """Connect to the Mongodb"""
+    #     if not self.__client:
+    #         self.__client = mongoengine.connect(alias='core',  host='mongodb://localhost:27017/techmify')
 
-    def close(self):
-        if self.__client:
-            self.__client.close()
-            self.__client = None
+    # def close(self):
+    #     if self.__client:
+    #         self.__client.close()
+    #         self.__client = None
 
     def add_user(self, email, hashed_password, username, firstname, lastname):
         user = MongoDBUser(email=email, hashed_password=hashed_password, username=username, firstname=firstname,
