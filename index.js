@@ -1,27 +1,31 @@
-// Connect to the Socket.IO server
-const socket = io('http://localhost:5000', { transport: 'websocket' });  // Replace with your server URL
+document.addEventListener('DOMContentLoaded', function () {
+  var socket = io.connect('http://0.0.0.0:5000');
 
-// Emit a chat request event
-socket.emit('chat_request', { from_id: 'user1', to_id: 'user2' });
+  function sendChatRequest() {
+      var fromId = document.getElementById('fromId').value;
+      var toId = document.getElementById('toId').value;
 
-// Listen for a chat request event
-socket.on('chat_request', (data) => {
-  console.log('Chat request received:', data);
-});
+      // Emit 'chat_request' event to the server
+      socket.emit('chat_request', { from_id: fromId, to_id: toId });
+  }
 
-// Emit an accept request event
-socket.emit('accept_request', { from_id: 'user2', to_id: 'user1' });
-// Listen for a chat accepted event
-socket.on('chat_accepted', (data) => {
-  console.log('Chat accepted:', data);
+  function sendLoginRequest() {
+      var email = document.getElementById('email').value;
+      var password = document.getElementById('password').value;
 
-  const message = { message: 'Hello, how are you?', room: data.room };
-  socket.emit('message', message);
-});
+      // Send a login request using Axios
+      axios.post('http://0.0.0.0:5000/sessions', {
+          email: email,
+          password: password
+      })
+      .then(function (response) {
+          console.log('Login success:', response.data);
+      })
+      .catch(function (error) {
+          console.error('Login error:', error.response.data);
+      });
+  }
 
-// Listen for a message event
-socket.on('message', (data) => {
-  console.log('Message received:', data);
-  // Display the message in your chat interface (e.g., append to #chat div)
-  document.getElementById('chat').innerHTML += `<p>${data.message}</p>`;
+  document.getElementById('sendChatRequestBtn').addEventListener('click', sendChatRequest);
+  document.getElementById('loginBtn').addEventListener('click', sendLoginRequest);
 });

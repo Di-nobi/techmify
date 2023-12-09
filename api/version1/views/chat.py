@@ -8,10 +8,16 @@ from main.chatRequest import ChatRequest
 from main.chats import Message
 from main.users import MongoDBUser
 from uuid import uuid4
+from main.auth import Auth
+
 key = Fernet.generate_key()
 cipher = Fernet(key)
 
-@socketio.on('chat_request')
+@socketio.on('connect', namespace='/test')
+def handle_connect():
+    print('Client Connected')
+
+@socketio.on('chat_request', namespace='/test')
 def handler_req(arg):
     """
     Upcoming updates:
